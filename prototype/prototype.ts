@@ -10,7 +10,7 @@ var carObject = {
     numofWheels : 4  
 } 
 
-// Object 
+// Object
 const car1 = Object.create(carObject);
 car1.drive(); // Started Driving            
 car1.brake(); // Stopping the carObject
