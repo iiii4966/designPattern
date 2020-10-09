@@ -1,45 +1,54 @@
-class Observer{
-    private readonly subscribers: InstanceType<typeof Subscriber>[] = []
-    constructor(){}
-    update(color: string){
+interface SubjectProperty{
+    name: string
+    color: string
+}
+
+class Subject{
+    private readonly subscribers: InstanceType<typeof Observer>[] = []
+    constructor(private props: SubjectProperty){}
+    change(key: string, value: string){
+        Reflect.set(this.props, key, value)
+        this.notify(this.props)
+    }
+    notify(props){
         this.subscribers.forEach(subscriber => {
-            subscriber.color = color
+            subscriber.update(this.props)
         })
     }
-    setSubscriber(subscriber: InstanceType<typeof Subscriber>){
+    subscribe(subscriber: InstanceType<typeof Observer>){
         this.subscribers.push(subscriber)
     }
-    removeSubscriber(subscriber: InstanceType<typeof Subscriber>){
+    removeSubscriber(subscriber: InstanceType<typeof Observer>){
         delete this.subscribers[this.subscribers.indexOf(subscriber)]
     }
 }
 
-class Subscriber{
-    observer?: InstanceType<typeof Observer>
-    constructor(public color: string){}
-    subscribe(observer: InstanceType<typeof Observer>){
-        this.observer = observer
-        observer.setSubscriber(this)
+class Observer{
+    subject?: InstanceType<typeof Subject>
+    constructor(readonly name: string){}
+    subscribe(subject: InstanceType<typeof Subject>){
+        this.subject = subject
+        subject.subscribe(this)
     }
     unSubscribe(){
-        this.observer = undefined;
-        observer.removeSubscriber(this);
+        if (this.subject) {
+            this.subject.removeSubscriber(this)
+            this.subject = undefined;
+        }
+    }
+    update(props: SubjectProperty){
+        console.log(this.name)
+        console.log(props)
     }
 }
 
-const red = new Subscriber('red');
-const blue = new Subscriber('blue');
-const observer = new Observer;
+const observer1 = new Observer('1');
+const observer2 = new Observer('2');
+const car = new Subject({name: 'car', color: 'red'});
 
-red.subscribe(observer); // subscribe
-observer.update('green'); // notify
+observer1.subscribe(car);
+car.change('color', 'green'); // change, notify; stdout: 1 { name: 'car', color: 'green' }
 
-console.log(red.color); // green
-console.log(blue.color); // not changed
-
-red.unSubscribe();
-blue.subscribe(observer); // subscribe
-observer.update('red'); // notify
-
-console.log(red.color); // green; not changed
-console.log(blue.color); // red
+observer1.unSubscribe();
+observer2.subscribe(car);
+car.change('color', 'blue'); // change, notify; 2 { name: 'car', color: 'blue' }
