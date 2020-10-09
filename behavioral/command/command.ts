@@ -13,19 +13,19 @@
 
  abstract class Command{ // command
      constructor(protected readonly reciever){}
-     abstract pureExecute(): any
+     abstract execute(): any
  }
 
  class OnCommand extends Command{
      constructor(readonly reciever){super(reciever)}
-     pureExecute (){ // encapsulation handler
+     execute (){ // encapsulation handler
          return this.reciever.on();
      }
  }
 
  class OffCommand extends Command{
      constructor(readonly reciever){super(reciever)}
-     pureExecute (){ // encapsulation handler
+     execute (){ // encapsulation handler
         // return this.reciever.off();
         return this.logExecute(); // easy modify without change original handler
      }
@@ -38,7 +38,7 @@
 
  type Commands = InstanceType<typeof OnCommand> | InstanceType<typeof OffCommand>
 
- const press = (command: Commands) => {command.pureExecute();} // invoker
+ const press = (command: Commands) => {command.execute();} // invoker
 
  const printer = new Printer()
  const printerOnCommand = new OnCommand(printer)
