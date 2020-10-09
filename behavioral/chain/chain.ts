@@ -34,7 +34,7 @@ class C extends UpperChain{
     private next: InstanceType<typeof UpperChain>
     constructor(){
         super();
-        this.next = new UpperChain
+        this.next = new UpperChain  
     }
     set setNext (chain: InstanceType<typeof UpperChain>){this.next = chain}
     toUpper(char: string) {
