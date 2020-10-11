@@ -47,7 +47,7 @@ class EmployeeController
     constructor(){
         this.model = null;
         this.view = null;
-        this.empList = [];
+        this.empList = []; // model 에 있어야 하는 게 아닌가.
     }
     
     addView(view) {

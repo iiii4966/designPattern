@@ -30,7 +30,7 @@ class MessageModel{
 }
 
 class MessageView{
-    public printedMessages: MessageInterface[] = []
+    public printedMessages: Message[] = []
     constructor(private controller: MessageController){}
     printMessage(){
         for (const msg of this.printedMessages){
@@ -38,10 +38,10 @@ class MessageView{
         };
     }
     input(content){
-        this.controller.create(content)
+        this.controller.createMsg(content)
     }
     delete(msgId){
-        this.controller.delete(msgId)
+        this.controller.deleteMsg(msgId)
     }
 }
 
@@ -50,11 +50,11 @@ class MessageController{
     private readonly model = new MessageModel()
     constructor(){}
 
-    create(content: string): void{
+    createMsg(content: string): void{
         this.view.printedMessages.push(this.model.create(content));
         this.view.printMessage();
     }
-    delete(msgId: number): void{
+    deleteMsg(msgId: number): void{
         this.model.delete(msgId);
         this.view.printedMessages = this.view.printedMessages.filter(msg => msg.id !== msgId);
         this.view.printMessage();
